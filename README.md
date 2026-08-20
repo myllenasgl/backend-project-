@@ -55,3 +55,10 @@ Myllena Lelis fez:
 2. **DTOs** — as entidades JPA deixaram de ser expostas diretamente na API. Cada recurso tem um `RequestDTO` (entrada) e um `ResponseDTO` (saída), convertidos por classes `*Mapper`. Isso também resolveu um problema real de referência cíclica na serialização entre `Course` e `Allocation` (que antes podia causar erro ao listar cursos).
 3. **Validadores** — os `RequestDTO`s usam Bean Validation (`@NotBlank`, `@NotNull`) para garantir que campos obrigatórios não cheguem nulos/vazios nas camadas de serviço.
 4. **Validação de CPF** — o campo `cpf` do professor usa a anotação `@CPF` (Hibernate Validator), que valida os dígitos verificadores reais do CPF, não só o formato.
+
+Ana Beatriz Fez:
+
+Ordenação na camada de serviços - Departamentos: ordenados alfabeticamente pelo nome.
+Cursos: ordenados alfabeticamente pelo nome.
+Professores: ordenados alfabeticamente pelo nome nas consultas gerais, por nome e por departamento.
+Alocações: ordenadas pelo dia da semana e, dentro do mesmo dia, pelo horário inicial.

@@ -10,6 +10,7 @@ import com.project.professor.allocation.exception.ScheduleConflictException;
 import com.project.professor.allocation.repository.AllocationRepository;
 
 import java.util.List;
+import java.util.Comparator;
 
 @Service
 public class AllocationService {
@@ -29,7 +30,7 @@ public class AllocationService {
 	}
 
 	public List<Allocation> findAll() {
-		return allocationRepository.findAll();
+		return sortBySchedule(allocationRepository.findAll());
 	}
 
 	public Allocation findById(Long id) {
@@ -40,13 +41,20 @@ public class AllocationService {
 	public List<Allocation> findByProfessor(Long professorId) {
 		Professor professor = new Professor();
 		professor.setId(professorId);
-		return allocationRepository.findByProfessor(professor);
+		return sortBySchedule(allocationRepository.findByProfessor(professor));
 	}
 
 	public List<Allocation> findByCourse(Long courseId) {
 		Course course = new Course();
 		course.setId(courseId);
-		return allocationRepository.findByCourse(course);
+		return sortBySchedule(allocationRepository.findByCourse(course));
+	}
+
+	private List<Allocation> sortBySchedule(List<Allocation> allocations) {
+		return allocations.stream()
+				.sorted(Comparator.comparing((Allocation allocation) -> allocation.getDayOfWeek())
+						.thenComparing(allocation -> allocation.getStartHour()))
+				.toList();
 	}
 
 	public Allocation save(Allocation allocation) {
