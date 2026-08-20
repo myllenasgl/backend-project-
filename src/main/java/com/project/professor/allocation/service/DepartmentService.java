@@ -1,6 +1,7 @@
 package com.project.professor.allocation.service;
 
 import java.util.List;
+import java.util.Comparator;
 
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,9 @@ public class DepartmentService {
 	}
 
 	public List<Department> findAll() {
-		return departmentRepository.findAll();
+		return departmentRepository.findAll().stream()
+				.sorted(Comparator.comparing((Department department) -> department.getName(), String.CASE_INSENSITIVE_ORDER))
+				.toList();
 	}
 
 	public Department findById(Long id) {

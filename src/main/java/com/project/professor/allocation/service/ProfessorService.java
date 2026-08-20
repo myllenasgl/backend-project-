@@ -10,6 +10,7 @@ import com.project.professor.allocation.repository.DepartmentRepository;
 import com.project.professor.allocation.repository.ProfessorRepository;
 
 import java.util.List;
+import java.util.Comparator;
 
 @Service
 public class ProfessorService {
@@ -23,7 +24,7 @@ public class ProfessorService {
 	}
 
 	public List<Professor> findAll() {
-		return professorRepository.findAll();
+		return sortByName(professorRepository.findAll());
 	}
 
 	public Professor findById(Long id) {
@@ -32,13 +33,19 @@ public class ProfessorService {
 	}
 
 	public List<Professor> findByName(String partName) {
-		return professorRepository.findByNameContainingIgnoreCase(partName);
+		return sortByName(professorRepository.findByNameContainingIgnoreCase(partName));
 	}
 
 	public List<Professor> findByDepartment(Long departmentId) {
 		Department department = new Department();
 		department.setId(departmentId);
-		return professorRepository.findByDepartment(department);
+		return sortByName(professorRepository.findByDepartment(department));
+	}
+
+	private List<Professor> sortByName(List<Professor> professors) {
+		return professors.stream()
+				.sorted(Comparator.comparing((Professor professor) -> professor.getName(), String.CASE_INSENSITIVE_ORDER))
+				.toList();
 	}
 
 	public Professor save(Professor professor) {

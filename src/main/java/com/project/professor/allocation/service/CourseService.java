@@ -6,6 +6,7 @@ import com.project.professor.allocation.exception.ResourceNotFoundException;
 import com.project.professor.allocation.repository.CourseRepository;
 
 import java.util.List;
+import java.util.Comparator;
 
 @Service
 public class CourseService {
@@ -17,7 +18,9 @@ public class CourseService {
 	}
 
 	public List<Course> findAll() {
-		return courseRepository.findAll();
+		return courseRepository.findAll().stream()
+				.sorted(Comparator.comparing((Course course) -> course.getName(), String.CASE_INSENSITIVE_ORDER))
+				.toList();
 	}
 
 	public Course findById(Long id) {
