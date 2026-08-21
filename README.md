@@ -10,8 +10,6 @@ API REST para gerenciamento de professores, departamentos, cursos e alocação d
 2. **Kleber Fanini**
 3. **Myllena Lelis**
 
-*(Listados em ordem alfabética)*
-
 ---
 
 ## Pontos de Melhoria Implementados (Nota Máxima: 10,00)
