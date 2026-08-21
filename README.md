@@ -66,9 +66,6 @@ Por Kleber Fanini
   * **Professores**: Ordenados alfabeticamente pelo nome (`name`) nas consultas gerais e por departamento.
   * **Alocações**: Ordenadas pelo dia da semana (`dayOfWeek`) e, secundariamente, pelo horário inicial (`startHour`).
 
-Por Ana Beatriz
----
-
 ### 7. Testes Automatizados (JUnit + Mockito + H2)
 * **O que é**: Cobertura de testes automatizados para a camada de serviço e de persistência, garantindo que as regras de negócio e as consultas ao banco continuem funcionando conforme o esperado.
 * **Como funciona**:
