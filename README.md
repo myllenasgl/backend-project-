@@ -69,6 +69,15 @@ Por Kleber Fanini
 Por Ana Beatriz
 ---
 
+### 7. Testes Automatizados (JUnit + Mockito + H2)
+* **O que é**: Cobertura de testes automatizados para a camada de serviço e de persistência, garantindo que as regras de negócio e as consultas ao banco continuem funcionando conforme o esperado.
+* **Como funciona**:
+  * **Testes unitários de serviço** (`AllocationServiceTest`, `CourseServiceTest`, `DepartmentServiceTest`, `ProfessorServiceTest`): usam **Mockito** para isolar a camada de serviço dos repositórios, validando regras como a ordenação de alocações por dia/horário e as buscas por professor/curso.
+  * **Testes de integração de repositório** (`AllocationRepositoryTest`, `CourseRepositoryTest`, `DepartmentRepositoryTest`, `ProfessorRepositoryTest`): usam `@DataJpaTest` com banco **H2 em memória**, validando as consultas customizadas dos repositórios (ex.: `findByNameContainingIgnoreCase`) contra um banco real, sem depender do MySQL.
+
+Por Ana Beatriz
+---
+
 ## Stack Tecnológica
 
 - Java 17
