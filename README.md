@@ -12,9 +12,7 @@ API REST para gerenciamento de professores, departamentos, cursos e alocação d
 
 ---
 
-## Pontos de Melhoria Implementados (Nota Máxima: 10,00)
-
-Para atender a todos os requisitos do trabalho e buscar a nota máxima (10,00), cada um dos 3 integrantes do grupo ficou responsável pela implementação e decisão técnica de um ponto de melhoria específico:
+## Pontos de Melhoria Implementados 
 
 ### 1. Manipulador de Exceções (*Exception Handlers*) 
 * **Decisão & Implementação**:
@@ -41,19 +39,16 @@ Para atender a todos os requisitos do trabalho e buscar a nota máxima (10,00), 
   * Incluída a anotação `@Valid` no parâmetro `@RequestBody` dos métodos de `POST` e `PUT` nas controllers.
   * **Benefício**: Evita que requisições com dados nulos, em branco ou CPFs semanticamente inválidos cheguem às camadas de serviço e repositório, retornando imediatamente HTTP 400 com os campos divergentes.
 
+Por Myllena Lelis
 ---
 
-## Diferenciais Avançados de Backend Implementados
-
-Além dos 3 pontos de melhoria exigidos, foram implementados **dois módulos diferenciais avançados na camada backend**:
-
-### 1. Módulo de Analytics & Carga Horária (`ReportService` / `ReportController`)
+### 4. Módulo de Analytics & Carga Horária (`ReportService` / `ReportController`)
 * **O que é**: Um serviço especializado na camada backend responsável pelo cálculo em tempo real de estatísticas e métricas de alocação de professores.
 * **Como funciona**:
   * **Cálculo da Carga Horária Semanal (`GET /reports/workload`)**: Utiliza a **Java 8+ Date/Time API (`java.time.Duration`)** e **Java Streams** para calcular o tempo total em horas/minutos acumulado por professor a partir das suas alocações ativas (`startHour` até `endHour`).
   * **Dashboard Consolidado (`GET /reports/dashboard`)**: Agrega e consolida em uma única resposta JSON a contagem total de professores, departamentos, cursos, alocações ativas e a lista detalhada de carga horária por docente.
 
-### 2. Módulo de Exportação de Agendas (`CSV` & `iCalendar .ics`)
+### 5. Módulo de Exportação de Agendas (`CSV` & `iCalendar .ics`)
 * **O que é**: Funcionalidade no backend que gera arquivos de agenda nos formatos padronizados **CSV** e **iCalendar (RFC 5545 `.ics`)**.
 * **Como funciona**:
   * **Exportação CSV (`GET /professors/{id}/schedule/export/csv`)**: Constrói um fluxo de texto formatado em CSV contendo o dia da semana, horários de início/fim, disciplina e departamento do professor, definindo os cabeçalhos HTTP `Content-Type: text/csv` e `Content-Disposition: attachment` para download direto no navegador ou cliente HTTP.
@@ -62,16 +57,16 @@ Além dos 3 pontos de melhoria exigidos, foram implementados **dois módulos dif
       * **Visualmente (Calendários)**: Dê 2 cliques no arquivo baixado para abrir no Calendário do Windows / Outlook, ou importe no Google Agenda em *Configurações ➔ Importar e exportar*.
       * **Estrutura de Código (Editor de Texto)**: Abra o arquivo `.ics` com o Bloco de Notas ou VS Code para inspecionar a estrutura de dados padronizada (RFC 5545) gerada pelo backend.
 
+Por Kleber Fanini
 ---
 
-## Outras Melhorias e Ordenações
-
-* **Ordenação na Camada de Serviços**:
+### 6. **Ordenação na Camada de Serviços**:
   * **Departamentos**: Ordenados alfabeticamente pelo nome (`name`).
   * **Cursos**: Ordenados alfabeticamente pelo nome (`name`).
   * **Professores**: Ordenados alfabeticamente pelo nome (`name`) nas consultas gerais e por departamento.
   * **Alocações**: Ordenadas pelo dia da semana (`dayOfWeek`) e, secundariamente, pelo horário inicial (`startHour`).
 
+Por Ana Beatriz
 ---
 
 ## Stack Tecnológica
@@ -81,21 +76,6 @@ Além dos 3 pontos de melhoria exigidos, foram implementados **dois módulos dif
 - MySQL / H2 Database (para testes)
 - Lombok
 - springdoc-openapi (Swagger UI)
-
----
-
-## Como Configurar e Rodar
-
-1. Certifique-se de ter um servidor MySQL rodando localmente (or ajuste para banco em memória/H2 no `application.properties`).
-2. Ajuste o usuário e senha no arquivo `src/main/resources/application.properties` (por padrão utiliza o banco `msgl_db`, criado automaticamente).
-3. Execute o comando:
-
-```bash
-mvn spring-boot:run
-```
-
-4. A API estará disponível em `http://localhost:8080`.
-5. A documentação interativa (Swagger UI) pode ser acessada em `http://localhost:8080/swagger-ui.html`.
 
 ---
 
@@ -114,7 +94,7 @@ mvn spring-boot:run
 
 ## Comentários para Avaliação do Professor
 
-* **Conformidade com os Requisitos**: O projeto atende integralmente à especificação da API REST de alocação de professores e aos 3 pontos de melhoria solicitados, distribuídos entre os 3 integrantes do grupo.
+* **Conformidade com os Requisitos**: O projeto atende integralmente à especificação da API REST de alocação de professores e aos 3 pontos de melhoria solicitados.
 * **Diferenciais Avançados de Backend**: Foram incluídos serviços de agregação de métricas com `java.time.Duration` e geradores de arquivos de agenda (`.csv` e `.ics` iCalendar) prontos para sincronização com o Google Agenda.
 * **Respostas Tratadas e Semânticas**: Todos os erros de validação, conflitos de horário e recursos não encontrados retornam códigos de status HTTP adequados com mensagens claras e timestamps.
 * **Repositório Público**: O repositório está configurado como público para acesso e avaliação.
