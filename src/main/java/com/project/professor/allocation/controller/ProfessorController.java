@@ -3,6 +3,7 @@ package com.project.professor.allocation.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import com.project.professor.allocation.dto.ProfessorResponseDTO;
 import com.project.professor.allocation.entity.Professor;
 import com.project.professor.allocation.mapper.ProfessorMapper;
 import com.project.professor.allocation.service.ProfessorService;
+import com.project.professor.allocation.service.ReportService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -35,9 +37,11 @@ import jakarta.validation.Valid;
 public class ProfessorController {
 
 	private final ProfessorService professorService;
+	private final ReportService reportService;
 
-	public ProfessorController(ProfessorService professorService) {
+	public ProfessorController(ProfessorService professorService, ReportService reportService) {
 		this.professorService = professorService;
+		this.reportService = reportService;
 	}
 
 	@Operation(summary = "Find all professors")
@@ -107,4 +111,31 @@ public class ProfessorController {
 		return ResponseEntity.ok(ProfessorMapper.toResponseDTO(professor));
 	}
 
+	@Operation(summary = "Export professor schedule to CSV file")
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "OK"),
+		@ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+	})
+	@GetMapping(path = "/{professor_id}/schedule/export/csv")
+	public ResponseEntity<String> exportScheduleCsv(@PathVariable(name = "professor_id") Long id) {
+		String csvContent = reportService.exportProfessorScheduleCsv(id);
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"agenda_professor_" + id + ".csv\"")
+				.contentType(MediaType.parseMediaType("text/csv"))
+				.body(csvContent);
+	}
+
+	@Operation(summary = "Export professor schedule to iCalendar (.ics) file")
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "OK"),
+		@ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+	})
+	@GetMapping(path = "/{professor_id}/schedule/export/ics")
+	public ResponseEntity<String> exportScheduleIcs(@PathVariable(name = "professor_id") Long id) {
+		String icsContent = reportService.exportProfessorScheduleIcs(id);
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"agenda_professor_" + id + ".ics\"")
+				.contentType(MediaType.parseMediaType("text/calendar"))
+				.body(icsContent);
+	}
 }

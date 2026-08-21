@@ -4,7 +4,7 @@ API REST para gerenciamento de professores, departamentos, cursos e alocação d
 
 ---
 
-## 👥 Integrantes do Grupo
+## Integrantes do Grupo
 
 1. **Ana Beatriz**
 2. **Kleber Fanini**
@@ -14,11 +14,11 @@ API REST para gerenciamento de professores, departamentos, cursos e alocação d
 
 ---
 
-## 🛠️ Pontos de Melhoria Implementados (Nota Máxima: 10,00)
+## Pontos de Melhoria Implementados (Nota Máxima: 10,00)
 
 Para atender a todos os requisitos do trabalho e buscar a nota máxima (10,00), cada um dos 3 integrantes do grupo ficou responsável pela implementação e decisão técnica de um ponto de melhoria específico:
 
-### 1. Manipulador de Exceções (*Exception Handlers*)
+### 1. Manipulador de Exceções (*Exception Handlers*) 
 * **Decisão & Implementação**:
   * Removidos todos os blocos `try/catch` dos métodos em todas as classes de controle (`AllocationController`, `CourseController`, `DepartmentController`, `ProfessorController`), mantendo a camada de controle limpa e focada no roteamento HTTP.
   * Criada a classe `GlobalExceptionHandler` anotada com `@RestControllerAdvice`, centralizando o tratamento de todas as exceções lançadas pela aplicação.
@@ -36,7 +36,7 @@ Para atender a todos os requisitos do trabalho e buscar a nota máxima (10,00), 
   * **Resolução de Referência Cíclica**: O relacionamento bidirecional entre `Course` e `Allocation` gerava loop infinito de serialização JSON (`StackOverflowError`). Com o uso do `CourseResponseDTO` e `AllocationResponseDTO`, a serialização foi resolvida de forma limpa, sem expor a lista recursiva de alocações e sem depender de anotações como `@JsonIgnore` nas entidades JPA.
   * **Respostas de Erro com Corpo**: Permitiu que os fluxos de erro contivessem um corpo de resposta padronizado via DTO `ApiError`.
 
-### 3. Uso de Validadores (*Bean Validation*)
+### 3. Uso de Validadores (*Bean Validation*)  
 * **Decisão & Implementação**:
   * Aplicadas anotações de Bean Validation (`@NotBlank`, `@NotNull`) nos DTOs de requisição (`AllocationRequestDTO`, `CourseRequestDTO`, `DepartmentRequestDTO`, `ProfessorRequestDTO`) para validação prévia dos atributos.
   * No campo `cpf` da classe `ProfessorRequestDTO`, foi aplicada a anotação `@CPF` do Hibernate Validator, garantindo a validação dos dígitos verificadores reais do CPF (não apenas do formato/tamanho da string).
@@ -45,7 +45,28 @@ Para atender a todos os requisitos do trabalho e buscar a nota máxima (10,00), 
 
 ---
 
-## 📌 Outras Melhorias e Ordenações
+## Diferenciais Avançados de Backend Implementados
+
+Além dos 3 pontos de melhoria exigidos, foram implementados **dois módulos diferenciais avançados na camada backend**:
+
+### 1. Módulo de Analytics & Carga Horária (`ReportService` / `ReportController`)
+* **O que é**: Um serviço especializado na camada backend responsável pelo cálculo em tempo real de estatísticas e métricas de alocação de professores.
+* **Como funciona**:
+  * **Cálculo da Carga Horária Semanal (`GET /reports/workload`)**: Utiliza a **Java 8+ Date/Time API (`java.time.Duration`)** e **Java Streams** para calcular o tempo total em horas/minutos acumulado por professor a partir das suas alocações ativas (`startHour` até `endHour`).
+  * **Dashboard Consolidado (`GET /reports/dashboard`)**: Agrega e consolida em uma única resposta JSON a contagem total de professores, departamentos, cursos, alocações ativas e a lista detalhada de carga horária por docente.
+
+### 2. Módulo de Exportação de Agendas (`CSV` & `iCalendar .ics`)
+* **O que é**: Funcionalidade no backend que gera arquivos de agenda nos formatos padronizados **CSV** e **iCalendar (RFC 5545 `.ics`)**.
+* **Como funciona**:
+  * **Exportação CSV (`GET /professors/{id}/schedule/export/csv`)**: Constrói um fluxo de texto formatado em CSV contendo o dia da semana, horários de início/fim, disciplina e departamento do professor, definindo os cabeçalhos HTTP `Content-Type: text/csv` e `Content-Disposition: attachment` para download direto no navegador ou cliente HTTP.
+  * **Exportação iCalendar (.ics) (`GET /professors/{id}/schedule/export/ics`)**: Monta um documento `.ics` estruturado com as marcas `VCALENDAR`, `VEVENT` e regras de recorrência semanal (`RRULE:FREQ=WEEKLY`), permitindo que o professor ou aluno baixe o arquivo e **importe sua grade horária diretamente no Google Agenda, Apple Calendar ou Microsoft Outlook**.
+    * *Como abrir/visualizar o arquivo .ics*:
+      * **Visualmente (Calendários)**: Dê 2 cliques no arquivo baixado para abrir no Calendário do Windows / Outlook, ou importe no Google Agenda em *Configurações ➔ Importar e exportar*.
+      * **Estrutura de Código (Editor de Texto)**: Abra o arquivo `.ics` com o Bloco de Notas ou VS Code para inspecionar a estrutura de dados padronizada (RFC 5545) gerada pelo backend.
+
+---
+
+## Outras Melhorias e Ordenações
 
 * **Ordenação na Camada de Serviços**:
   * **Departamentos**: Ordenados alfabeticamente pelo nome (`name`).
@@ -55,7 +76,7 @@ Para atender a todos os requisitos do trabalho e buscar a nota máxima (10,00), 
 
 ---
 
-## 🧱 Stack Tecnológica
+## Stack Tecnológica
 
 - Java 17
 - Spring Boot 4.1.0 (Spring Web, Spring Data JPA, Bean Validation)
@@ -65,9 +86,9 @@ Para atender a todos os requisitos do trabalho e buscar a nota máxima (10,00), 
 
 ---
 
-## ⚙️ Como Configurar e Rodar
+## Como Configurar e Rodar
 
-1. Certifique-se de ter um servidor MySQL rodando localmente (ou ajuste para banco em memória/H2 no `application.properties`).
+1. Certifique-se de ter um servidor MySQL rodando localmente (or ajuste para banco em memória/H2 no `application.properties`).
 2. Ajuste o usuário e senha no arquivo `src/main/resources/application.properties` (por padrão utiliza o banco `msgl_db`, criado automaticamente).
 3. Execute o comando:
 
@@ -80,19 +101,22 @@ mvn spring-boot:run
 
 ---
 
-## 📋 Endpoints Disponíveis
+## Endpoints Disponíveis
 
 | Recurso | Endpoints |
 |---|---|
 | **Departamentos** | `GET /departments`, `POST /departments`, `GET /departments/{id}`, `PUT /departments/{id}`, `DELETE /departments/{id}` |
 | **Professores** | `GET /professors`, `POST /professors`, `GET /professors/{id}`, `PUT /professors/{id}`, `DELETE /professors/{id}`, `GET /professors?name=`, `GET /professors/department/{department_id}` |
+| **Exportação de Agenda** | `GET /professors/{id}/schedule/export/csv`, `GET /professors/{id}/schedule/export/ics` |
 | **Cursos** | `GET /courses`, `POST /courses`, `GET /courses/{id}`, `PUT /courses/{id}`, `DELETE /courses/{id}` |
 | **Alocações** | `GET /allocations`, `POST /allocations`, `GET /allocations/{id}`, `PUT /allocations/{id}`, `DELETE /allocations/{id}`, `GET /allocations/professor/{professor_id}`, `GET /allocations/course/{course_id}` |
+| **Relatórios & Analytics** | `GET /reports/workload`, `GET /reports/dashboard` |
 
 ---
 
-## 💬 Comentários para Avaliação do Professor
+## Comentários para Avaliação do Professor
 
 * **Conformidade com os Requisitos**: O projeto atende integralmente à especificação da API REST de alocação de professores e aos 3 pontos de melhoria solicitados, distribuídos entre os 3 integrantes do grupo.
+* **Diferenciais Avançados de Backend**: Foram incluídos serviços de agregação de métricas com `java.time.Duration` e geradores de arquivos de agenda (`.csv` e `.ics` iCalendar) prontos para sincronização com o Google Agenda.
 * **Respostas Tratadas e Semânticas**: Todos os erros de validação, conflitos de horário e recursos não encontrados retornam códigos de status HTTP adequados com mensagens claras e timestamps.
 * **Repositório Público**: O repositório está configurado como público para acesso e avaliação.
